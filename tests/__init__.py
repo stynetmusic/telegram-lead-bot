@@ -1,0 +1,1 @@
+"""Тесты telegram-lead-bot."""

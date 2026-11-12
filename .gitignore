@@ -1,0 +1,59 @@
+# Секреты. .env и любые .env.* не публикуются.
+# Исключение ниже возвращает .env.example: шаблон без секретов остаётся в проекте.
+.env
+.env.local
+.env.*
+!.env.example
+*.pem
+*.key
+
+# База, выгрузки и персональные данные
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.xlsx
+*.xls
+
+# Журналы и временные файлы
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+.pip-cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Системные файлы
+.DS_Store
+
+# Локальные заметки сессии. Содержат пути машины и не публикуются.
+SESSION_NOTES.md
+
+# Редакторы и резервные копии
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*~
+*.bak
+*.orig
+.#*
+\#*\#
