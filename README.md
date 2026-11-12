@@ -42,12 +42,20 @@ telegram-lead-bot/
 ├── .env.example
 ├── .gitignore
 ├── src/leadbot/
+│   ├── __init__.py          # пакет и версия
 │   ├── __main__.py          # запуск: python -m leadbot
 │   ├── cli.py               # аргументы, --check, код возврата
 │   ├── config.py            # чтение окружения и .env
 │   ├── runtime.py           # long polling, только при реальном запуске
 │   ├── app.py               # сборка диспетчера
+│   ├── commands.py          # разбор команд /lead_ID и /status_ID
+│   ├── models.py            # заявка и статусы
+│   ├── errors.py            # ошибки приложения
 │   ├── handlers/            # команды клиента, администратора и запасные ответы
+│   │   ├── __init__.py
+│   │   ├── client.py        # приветствие и новая заявка
+│   │   ├── admin.py         # список, карточка, статус и экспорт
+│   │   └── fallback.py      # ответы вне сценария
 │   ├── repository.py        # SQLite
 │   ├── validation.py        # проверка имени, телефона и описания
 │   ├── permissions.py       # права администратора
