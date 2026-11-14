@@ -10,7 +10,8 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from leadbot.errors import ConfigError
 
-_TOKEN_RE = re.compile(r"\d{6,15}:[A-Za-z0-9_-]{35}")
+# Секрет BotFather не фиксирован на 35 символах. ID остаётся числом, алфавит — прежним.
+_TOKEN_RE = re.compile(r"\d{6,15}:[A-Za-z0-9_-]{35,64}")
 _ENV_KEY_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 _LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 _DEFAULT_BUSINESS_NAME = "Сервис заявок"

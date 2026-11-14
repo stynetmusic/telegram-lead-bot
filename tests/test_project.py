@@ -128,8 +128,7 @@ def _tracked_local_secrets() -> list[str]:
 
 
 def test_repository_has_no_real_tokens_or_local_data() -> None:
-    """Каталог .git допустим. Секреты и локальные рабочие данные — нет."""
-    assert not (ROOT / ".env").exists()
+    """Локальный .env допустим. В Git не должны попасть секреты и рабочие данные."""
     offenders: list[str] = []
     for path in ROOT.rglob("*"):
         if not path.is_file():
@@ -137,6 +136,10 @@ def test_repository_has_no_real_tokens_or_local_data() -> None:
         if any(part in SKIP_DIRS for part in path.parts):
             continue
         relative = path.relative_to(ROOT).as_posix()
+        # Файл нужен для локального запуска. Его нельзя читать и нельзя требовать удалить.
+        # Попадание в репозиторий проверяет git ls-files ниже.
+        if relative == ".env":
+            continue
         if _is_local_secret(path):
             offenders.append(relative)
             continue

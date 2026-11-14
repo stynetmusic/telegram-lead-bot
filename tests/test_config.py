@@ -33,6 +33,54 @@ def test_invalid_token_is_not_echoed(
     assert secret not in str(exc.value)
 
 
+def test_token_secrets_of_35_and_36_characters_are_accepted(
+    clean_env: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("ADMIN_IDS", "10")
+    for length in (35, 36):
+        monkeypatch.setenv("BOT_TOKEN", "100000001:" + ("A" * length))
+        loaded = load_settings(env_file=None)
+        bot_id, secret = loaded.bot_token.split(":", 1)
+        assert bot_id == "100000001"
+        assert secret == "A" * length
+
+
+@pytest.mark.parametrize(
+    "secret",
+    [
+        "100000001:" + ("A" * 34) + "*",
+        "100000001:" + ("A" * 20) + " " + ("A" * 14),
+        "100000001" + ("B" * 35),
+    ],
+)
+def test_malformed_token_is_rejected_without_echoing_it(
+    clean_env: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    secret: str,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("BOT_TOKEN", secret)
+    with pytest.raises(ConfigError, match="неверный формат") as exc:
+        load_settings(env_file=None)
+    assert secret not in str(exc.value)
+
+
+def test_empty_token_is_rejected_without_echoing_it(
+    clean_env: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("BOT_TOKEN", "   ")
+    with pytest.raises(ConfigError, match="Не задан BOT_TOKEN") as exc:
+        load_settings(env_file=None)
+    assert "AA" not in str(exc.value)
+
+
 def test_settings_repr_hides_token(settings) -> None:
     rendered = f"{settings!r} {settings}"
     assert settings.bot_token not in rendered

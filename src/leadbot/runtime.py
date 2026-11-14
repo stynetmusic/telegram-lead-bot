@@ -39,8 +39,18 @@ async def setup_commands(bot: Bot, settings: Settings) -> None:
                 list(_ADMIN_COMMANDS),
                 scope=BotCommandScopeChat(chat_id=admin_id),
             )
-        except TelegramAPIError:
-            logger.warning("Не удалось обновить команды администратора %s", admin_id)
+        except TelegramAPIError as exc:
+            # Текст ответа Telegram может случайно содержать токен. В журнал
+            # попадает уже очищенная строка; RedactingFormatter страхует вывод.
+            detail = str(exc)
+            if settings.bot_token:
+                detail = detail.replace(settings.bot_token, "***")
+            logger.warning(
+                "Не удалось обновить команды администратора %s: %s: %s",
+                admin_id,
+                type(exc).__name__,
+                detail,
+            )
 
 
 async def run_bot(settings: Settings) -> None:
